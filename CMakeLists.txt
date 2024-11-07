@@ -13,7 +13,6 @@ target_sources(Konstruct
         FILE_SET cxx_modules TYPE CXX_MODULES
         BASE_DIRS include
         FILES
-        include/OptionTypes.ixx
         include/ParseOption.ixx
         include/REPL.ixx
         include/Parser.ixx
