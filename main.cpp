@@ -1,28 +1,43 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
+import REPLHandler;
+import CLIHandler;
 import ParseOption;
-import REPL;
 
-
-#define REPL_EXIT_SUCESS 1;
-#define CLM_EXIT_SUCESS 0;
+#define REPL_EXIT_SUCCESS 1
+#define CLI_EXIT_SUCCESS 0
 
 int main(const int argc, char **argv) {
     const std::vector<std::string> args(argv + 1, argv + argc);
 
-    const ParseOption legacy_parser(args);
+    const ParseOption option_parser(args);
 
-    if (legacy_parser.getOption("it") == "true") {
+    if (option_parser.getOption("it") == "true") {
         std::cout << "Entering REPL mode. Type 'exit' to quit.\n";
-        Parser parser(ParserModes::REPL_MODE);
-        REPL repl(parser);
-        return REPL_EXIT_SUCESS;
+        REPLHandler repl_handler;
+        std::string input;
+        while (true) {
+            std::cout << "REPL> ";
+            std::getline(std::cin, input);
+            if (input == "exit") break;
+            repl_handler.parse_input(input);
+            repl_handler.execute_commands();
+        }
+        return REPL_EXIT_SUCCESS;
     }
 
-    const std::string lang = legacy_parser.getOption("lang");
-    const std::string standard = legacy_parser.getOption("standard");
-    const std::vector<std::string> modules = legacy_parser.getOptionList("modules");
+    const std::string lang = option_parser.getOption("lang");
+    const std::string standard = option_parser.getOption("standard");
+    const std::vector<std::string> modules = option_parser.getOptionList("modules");
+
+    CLIHandler cli_handler;
+    cli_handler.parse_input(lang + " " + standard);
+    for (const auto &module: modules) {
+        cli_handler.parse_input(module);
+    }
+    cli_handler.execute_commands();
 
     std::cout << "Language: " << lang << "\n";
     std::cout << "Standard: " << standard << "\n";
@@ -32,13 +47,12 @@ int main(const int argc, char **argv) {
     }
 
     std::cout << "\nAll options:\n";
-    legacy_parser.printOptions();
+    option_parser.printOptions();
 
     std::cout << "Press enter to continue. . .";
 
     std::string enter_press_holder;
     std::getline(std::cin, enter_press_holder);
 
-
-    return CLM_EXIT_SUCESS;
+    return CLI_EXIT_SUCCESS;
 }
