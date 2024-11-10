@@ -1,0 +1,67 @@
+## Default CPP Configuration ##
+
+# Those are overriden by REPL
+# You may not touch variables that change often as it is not needed
+project:
+  name: MyProject
+  version: 1.0.0
+  description: "A sample C++ project"
+  cmake_version: 3.30 # Your cMake version
+
+# The default structure to generate, you can extend it based on your needs
+directories:
+  main_directory:
+    - main.cpp
+    - CMakeLists.txt
+    - .clang-format
+    - src/
+    - include/           # Common directory for headers
+    - tests/             # Directory for tests
+    - build/             # Directory for build output (usually ignored in VCS)
+
+# cMake additional configuration
+cmake:
+  project_name: ${project.name}
+  minimum_required_version: ${project.cmake_version} # Refer to cmake_version from project object above
+  cpp_standard: 23 # C++ standard to use
+  build_type: Release # By default, can change it to Debug
+  options:
+    enable_testing: true   # Only needed if your project has Unit tests
+    warnings_as_errors: true # werror is a widely used flag to restrict compilation on clean code
+
+targets:
+  - name: MyExecutable # Target name, overriden by REPL & CLI setup
+    type: executable
+    sources:
+      - main.cpp
+    include_directories:
+      - include/ # The directory where you want to store your header files
+    compile_options:
+      - -Wall
+      - -Wextra
+      - -pedantic
+    link_libraries: # You can below add additional libraries provided with dashes (e.g. - fmt, etc...)
+
+# Setup dependencies:
+# - name: lib_name
+#   version: lib_version
+dependencies:
+
+# Default cl format arguments, might edit them by default
+clang_format:
+  style: "Google"
+  indent_width: 4
+  access_modifier_offset: -1
+  align_after_open_bracket: true
+  align_consecutive_assignments: true
+
+git:
+  initialize: true
+  ignore:
+    - "build/"
+    - "*.o"
+    - "*.so"
+    - "*.a"
+    - "*.exe"
+    - "*.log"
+    - .DS_Store
