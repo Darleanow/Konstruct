@@ -2,6 +2,7 @@ module;
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <vector>
 
 export module CLIHandler;
 import BaseHandler;
