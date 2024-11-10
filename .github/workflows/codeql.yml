@@ -80,18 +80,13 @@ jobs:
       shell: bash
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-16 main"
+        sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-17 main"
         sudo apt-get update
-
-        sudo apt-get install -y clang-16 clang++-16 lldb-16 lld-16 clangd-16
-
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 160
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-16 160
-        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-16 160
-        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-16 160
-
-        clang --version
-        clang++ --version
+        sudo apt-get install -y clang-17 clang++-17 libc++-17-dev libc++abi-17-dev
+        
+        # Set as default compiler
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 170
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 170
 
         wget https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-linux.zip
         unzip ninja-linux.zip -d ninja
@@ -100,9 +95,9 @@ jobs:
 
         mkdir -p build
         cd build
-        cmake -G Ninja ..
+        cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
         cmake --build .
-
+        
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
