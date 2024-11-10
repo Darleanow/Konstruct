@@ -82,7 +82,8 @@ jobs:
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
         sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ llvm-toolchain-$(lsb_release -cs)-17 main"
         sudo apt-get update
-        sudo apt-get install -y clang-17 clang++-17 libc++-17-dev libc++abi-17-dev
+        # Add clang-tools-17 to the installation
+        sudo apt-get install -y clang-17 clang++-17 libc++-17-dev libc++abi-17-dev clang-tools-17
         
         # Set as default compiler
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 170
@@ -97,7 +98,7 @@ jobs:
         cd build
         cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
         cmake --build .
-        
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
