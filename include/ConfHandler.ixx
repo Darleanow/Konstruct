@@ -63,7 +63,7 @@ public:
     }
 
     static void process_yaml_file() {
-        throw std::exception("Not Implemented");
+        throw std::runtime_error("Not Implemented");
     }
 
 private:
